@@ -165,10 +165,9 @@ class DatabaseBackupDumper
 
         //add current as first type...
         $filePath = $this->backupsPath.'/'.static::CURRENT_BACKUP;
-        if (!$this->fs->exists($filePath)) {
-            $return['current'] = [];
+        if ($this->fs->exists($filePath)) {
+            $return['current'] = [new File($filePath)];
         }
-        $return['current'] = [new File($filePath)];
 
         foreach (static::getBackupTypes() as $backupType) {
             $finder = new Finder();
@@ -180,7 +179,9 @@ class DatabaseBackupDumper
                     return $b->getMTime() - $a->getMTime();
                 }
             );
-            $return[$backupType] = $finder;
+            if ($finder->count() > 0) {
+                $return[$backupType] = $finder;
+            }
         }
 
         return $return;
