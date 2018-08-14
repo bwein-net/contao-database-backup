@@ -40,6 +40,7 @@ class DatabaseBackupDumper
 
     protected $maxBackups;
     protected $databaseHost;
+    protected $databasePort;
     protected $databaseName;
     protected $databaseUser;
     protected $databasePassword;
@@ -71,9 +72,10 @@ class DatabaseBackupDumper
      *
      * @param int                      $maxBackups
      * @param string                   $databaseHost
+     * @param int                      $databasePort
      * @param string                   $databaseName
-     * @param string                   $databaseUser
-     * @param string                   $databasePassword
+     * @param string|null              $databaseUser
+     * @param string|null              $databasePassword
      * @param string                   $rootDir
      * @param ContaoFrameworkInterface $framework
      * @param LoggerInterface          $logger
@@ -82,9 +84,10 @@ class DatabaseBackupDumper
     public function __construct(
         int $maxBackups,
         string $databaseHost,
+        int $databasePort,
         string $databaseName,
-        string $databaseUser,
-        string $databasePassword,
+        $databaseUser,
+        $databasePassword,
         string $rootDir,
         ContaoFrameworkInterface $framework,
         LoggerInterface $logger,
@@ -92,6 +95,7 @@ class DatabaseBackupDumper
     ) {
         $this->maxBackups = $maxBackups;
         $this->databaseHost = $databaseHost;
+        $this->databasePort = $databasePort;
         $this->databaseName = $databaseName;
         $this->databaseUser = $databaseUser;
         $this->databasePassword = $databasePassword;
@@ -248,6 +252,7 @@ class DatabaseBackupDumper
                 'mysqldump',
                 $this->databaseName,
                 '--host='.$this->databaseHost,
+                '--port='.$this->databasePort,
                 '--user='.$this->databaseUser,
                 '--password='.$this->databasePassword,
                 '--add-locks',
