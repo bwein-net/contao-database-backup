@@ -10,7 +10,7 @@
         "command"
     ],
     "type": "contao-bundle",
-    "license": "GPL-3.0-or-later",
+    "license": "MIT",
     "authors": [
         {
             "name": "bwein.net",
