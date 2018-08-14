@@ -1,0 +1,36 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    bwein.database_backup.dumper:
+        class: Bwein\DatabaseBackup\Service\DatabaseBackupDumper
+        arguments:
+        - #set by extension
+        - '%database_host%'
+        - '%database_name%'
+        - '%database_user%'
+        - '%database_password%'
+        - '%kernel.project_dir%'
+        - '@contao.framework'
+        - '@logger'
+        - '@filesystem'
+        tags:
+        - { name: 'monolog.logger', channel: 'bwein_database_backup' }
+
+    bwein.database_backup.dump_command:
+        class: Bwein\DatabaseBackup\Command\DatabaseBackupCommand
+        arguments:
+        - '@bwein.database_backup.dumper'
+        tags: ['console.command']
+
+    Bwein\DatabaseBackup\Controller\BackendController:
+        arguments:
+        - #set by extension
+        - '@request_stack'
+        - '@router'
+        - '@translator'
+        - '@contao.framework'
+        - '@bwein.database_backup.dumper'
+        - '@twig'

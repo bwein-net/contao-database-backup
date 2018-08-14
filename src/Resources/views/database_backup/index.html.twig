@@ -1,0 +1,26 @@
+{% extends "@ContaoCore/Backend/be_page.html.twig" %}
+
+{% block headline %}
+    {{ 'database_backup_title' | trans }}
+{% endblock %}
+
+{% block main %}
+
+    <div id="tl_buttons">
+        <a href="{{ backUrl }}" class="header_back" title="">{{ 'database_backup_button_back' | trans }}</a>
+    </div>
+
+    <div id="tl_maintenance_cache" class="maintenance_inactive">
+        {{ messages | raw }}
+
+        {% include '@BweinDatabaseBackup/database_backup/snippets/create.html.twig' only %}
+
+        {% for type,backups in backupTypes %}
+            {% include '@BweinDatabaseBackup/database_backup/snippets/list.html.twig'
+                with { 'type': type, 'backups' : backups } only %}
+        {% endfor %}
+    </div>
+
+{% endblock %}
+
+{% block error %}{% endblock %}

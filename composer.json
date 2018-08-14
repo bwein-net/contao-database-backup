@@ -1,0 +1,41 @@
+{
+    "name": "bwein-net/contao-database-backup",
+    "description": "Database Backup for Contao Open Source CMS",
+    "keywords": [
+        "contao",
+        "database",
+        "backup",
+        "sql",
+        "dump",
+        "command"
+    ],
+    "type": "contao-bundle",
+    "license": "GPL-3.0-or-later",
+    "authors": [
+        {
+            "name": "bwein.net",
+            "homepage": "https://bwein.net/"
+        }
+    ],
+    "require": {
+        "php": ">=7.0",
+        "contao/core-bundle": "^4.4",
+        "spe/filesize-extension-bundle": "^1.0",
+        "twig/extensions": "^1.5"
+    },
+    "require-dev": {
+        "contao/manager-plugin": "^2.0",
+        "friendsofphp/php-cs-fixer": "^2.12"
+    },
+    "conflict": {
+        "contao/manager-plugin": "<2.0 || >=3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Bwein\\DatabaseBackup\\": "src/"
+        }
+    },
+    "extra": {
+        "contao-manager-plugin": "Bwein\\DatabaseBackup\\ContaoManager\\Plugin"
+    }
+}

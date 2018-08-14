@@ -1,0 +1,11 @@
+<div class="database_backup create">
+    <h2 class="sub_headline">{{ ('database_backup_create_title') | trans }}</h2>
+    <div class="tl_tbox">
+        {% set url_params = { 'create': 'manual' } %}
+        <a href="{{ path('contao_database_backup', url_params) }}"
+           title="{{ 'database_backup_create_manual' | trans }}"
+           class="tl_submit download">
+            {{ 'database_backup_create_manual' | trans }}
+        </a>
+    </div>
+</div>
