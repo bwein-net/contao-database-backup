@@ -72,7 +72,7 @@ class DatabaseBackupDumper
      *
      * @param int                      $maxBackups
      * @param string                   $databaseHost
-     * @param int                      $databasePort
+     * @param int|null                 $databasePort
      * @param string                   $databaseName
      * @param string|null              $databaseUser
      * @param string|null              $databasePassword
@@ -84,7 +84,7 @@ class DatabaseBackupDumper
     public function __construct(
         int $maxBackups,
         string $databaseHost,
-        int $databasePort,
+        $databasePort,
         string $databaseName,
         $databaseUser,
         $databasePassword,
