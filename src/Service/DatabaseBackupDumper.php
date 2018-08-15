@@ -285,8 +285,12 @@ class DatabaseBackupDumper
 
     private function setCurrentSymlink()
     {
+        $relativePath = $this->fs->makePathRelative(
+            $this->backupsPath.'/'.$this->backupTypePath.'/',
+            $this->backupsPath.'/'
+        );
         $this->fs->symlink(
-            $this->backupsPath.'/'.$this->backupTypePath.'/'.$this->backupFileName,
+            $relativePath.$this->backupFileName,
             $this->backupsPath.'/'.static::CURRENT_BACKUP
         );
     }
