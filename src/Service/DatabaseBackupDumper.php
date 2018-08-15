@@ -71,9 +71,9 @@ class DatabaseBackupDumper
      * DatabaseBackupDumper constructor.
      *
      * @param int                      $maxBackups
-     * @param string                   $databaseHost
+     * @param string|null              $databaseHost
      * @param int|null                 $databasePort
-     * @param string                   $databaseName
+     * @param string|null              $databaseName
      * @param string|null              $databaseUser
      * @param string|null              $databasePassword
      * @param string                   $rootDir
@@ -83,9 +83,9 @@ class DatabaseBackupDumper
      */
     public function __construct(
         int $maxBackups,
-        string $databaseHost,
+        $databaseHost,
         $databasePort,
-        string $databaseName,
+        $databaseName,
         $databaseUser,
         $databasePassword,
         string $rootDir,
@@ -123,6 +123,10 @@ class DatabaseBackupDumper
     public function doBackup(string $backupType = null, string $filename = null, OutputInterface $output = null)
     {
         $this->framework->initialize();
+
+        if (empty($this->databaseName)) {
+            throw new \InvalidArgumentException('databaseName is not defined.');
+        }
 
         $this->backupType = $backupType;
         $this->backupTypePath = $this->resolveBackupTypePath();
