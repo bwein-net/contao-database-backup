@@ -122,7 +122,18 @@ class DatabaseBackupDumper
      */
     public function doBackup(string $backupType = null, string $filename = null, OutputInterface $output = null)
     {
-        $this->framework->initialize();
+        $this->output = $output;
+        if (null === $this->output) {
+            $this->output = new NullOutput();
+        }
+
+        try {
+            $this->framework->initialize();
+        } catch (\Exception $exception) {
+            $this->output->writeln('<comment>Framework was not initialized!</comment>');
+
+            return false;
+        }
 
         if (empty($this->databaseName)) {
             throw new \InvalidArgumentException('databaseName is not defined.');
@@ -137,10 +148,6 @@ class DatabaseBackupDumper
         }
         $this->backupFileName = $this->backupFileName.'.sql.gz';
 
-        $this->output = $output;
-        if (null === $this->output) {
-            $this->output = new NullOutput();
-        }
         $this->output->writeln(
             sprintf(
                 '<comment>Database backup of "%s" to "%s/%s" starting...</comment>',
