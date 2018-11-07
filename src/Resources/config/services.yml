@@ -29,9 +29,11 @@ services:
     Bwein\DatabaseBackup\Controller\BackendController:
         arguments:
         - #set by extension
+        - '@database_connection'
         - '@request_stack'
+        - '@session'
         - '@router'
+        - '@security.token_storage'
         - '@translator'
-        - '@contao.framework'
-        - '@bwein.database_backup.dumper'
         - '@twig'
+        - '@bwein.database_backup.dumper'

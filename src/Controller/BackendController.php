@@ -17,26 +17,66 @@ use Contao\CoreBundle\Exception\InternalServerErrorException;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\Message;
 use Contao\System;
+use Doctrine\DBAL\Connection;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 use Twig_Environment;
 use Twig_Extensions_Extension_Intl;
 
 class BackendController extends Controller
 {
+    /**
+     * @var string
+     */
     protected $downloadFileNameCurrent;
-    protected $requestStack;
-    protected $request;
-    protected $router;
+
+    /**
+     * @var TranslatorInterface
+     */
     protected $translator;
-    protected $framework;
-    protected $dumper;
+
+    /**
+     * @var Twig_Environment
+     */
     protected $twig;
+
+    /**
+     * @var DatabaseBackupDumper
+     */
+    protected $dumper;
+
+    /**
+     * @var Connection
+     */
+    private $db;
+
+    /**
+     * @var RequestStack
+     */
+    private $requestStack;
+
+    /**
+     * @var AttributeBagInterface
+     */
+    private $session;
+
+    /**
+     * @var RouterInterface
+     */
+    private $router;
+
+    /**
+     * @var BackendUser
+     */
+    private $user;
 
     /**
      * BackendController constructor.
@@ -51,20 +91,24 @@ class BackendController extends Controller
      */
     public function __construct(
         string $downloadFileNameCurrent,
+        Connection $db,
         RequestStack $requestStack,
+        SessionInterface $session,
         RouterInterface $router,
+        TokenStorageInterface $tokenStorage,
         TranslatorInterface $translator,
-        ContaoFrameworkInterface $framework,
-        DatabaseBackupDumper $dumper,
-        Twig_Environment $twig
+        Twig_Environment $twig,
+        DatabaseBackupDumper $dumper
     ) {
         $this->downloadFileNameCurrent = $downloadFileNameCurrent;
+        $this->db = $db;
         $this->requestStack = $requestStack;
+        $this->session = $session->getBag('contao_backend');
         $this->router = $router;
+        $this->user = $tokenStorage->getToken()->getUser();
         $this->translator = $translator;
-        $this->framework = $framework;
-        $this->dumper = $dumper;
         $this->twig = $twig;
+        $this->dumper = $dumper;
     }
 
     /**
@@ -72,24 +116,21 @@ class BackendController extends Controller
      */
     public function indexAction()
     {
-        $this->request = $this->requestStack->getCurrentRequest();
-        if (null === $this->request) {
+        $request = $this->requestStack->getCurrentRequest();
+        if (null === $request) {
             throw new InternalServerErrorException('No request object given.');
         }
 
-        $this->framework->initialize();
-
-        /** @var BackendUser $backendUser */
-        $backendUser = $this->framework->getAdapter(BackendUser::class)->getInstance();
-        if (!$backendUser->hasAccess('database_backup', 'modules')) {
+        /* @var BackendUser $backendUser */
+        if (!$this->user->hasAccess('database_backup', 'modules')) {
             throw new AccessDeniedException('Not enough permissions to access database_backup.');
         }
 
-        if (!empty($createType = $this->request->get('create'))) {
+        if (!empty($createType = $request->get('create'))) {
             return $this->createAction($createType);
         }
-        if (!empty($fileName = $this->request->get('download'))) {
-            return $this->downloadAction($fileName, $this->request->get('backupType'));
+        if (!empty($fileName = $request->get('download'))) {
+            return $this->downloadAction($fileName, $request->get('backupType'));
         }
 
         return $this->listAction();
