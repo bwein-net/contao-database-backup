@@ -286,7 +286,8 @@ class DatabaseBackupDumper
                 '| gzip -c',
             ];
 
-        $process = new Process($dumpCommand);
+        $cmd = implode(' ', $dumpCommand);
+        $process = \method_exists(Process::class, 'fromShellCommandline') ? Process::fromShellCommandline($cmd) : new Process($cmd);
         $process->run();
 
         if (!$process->isSuccessful()) {
