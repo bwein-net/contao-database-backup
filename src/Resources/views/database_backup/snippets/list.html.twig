@@ -1,12 +1,12 @@
 {% if(backups is not empty) %}
-    <div class="database_backup list {{ type }}">
-        <h2 class="sub_headline">{{ ('database_backup_list_title.'~type) | trans }}</h2>
+    <div class="database_backup list">
         <div class="tl_tbox">
             <table class="tl_listing">
                 <thead>
                 <tr>
                     <th>{{ 'database_backup_date' | trans }}</th>
                     <th>{{ 'database_backup_size' | trans }}</th>
+                    <th>{{ 'database_backup_type' | trans }}</th>
                     <th></th>
                 </tr>
                 </thead>
@@ -17,19 +17,19 @@
                         {% set cssClass = 'odd' %}
                     {% endif %}
                     <tr class="{{ cssClass }}">
-                        <td class="nw" width="40%">
-                            {{ backup.mTime | localizeddate('medium', 'medium') }}
+                        <td class="nw" width="30%">
+                            {{ backup.dateTime }}
                         </td>
-                        <td class="nw" width="40%">
-                            {{ backup.size | readable_filesize }}
+                        <td width="25%">
+                            {{ backup.size }}
+                        </td>
+                        <td width="25%">
+                            {{ ('database_backup_type_options.'~backup.type) | trans }}
                         </td>
                         <td width="20%">
-                            {% set url_params = { 'download': backup.filename } %}
-                            {% if type != "current" %}
-                                {% set url_params = { 'backupType': type } | merge(url_params) %}
-                            {% endif %}
+                            {% set url_params = { 'backupType': backup.type, 'download': backup.fileName } %}
                             <a href="{{ path('contao_database_backup', url_params) }}"
-                               title="{{ 'database_backup_download' | trans }} {{ backup.mTime | localizeddate('medium', 'medium') }}"
+                               title="{{ 'database_backup_download' | trans }} {{ backup.dateTime }}"
                                class="tl_submit download">
                                 {{ 'database_backup_download' | trans }}
                             </a>

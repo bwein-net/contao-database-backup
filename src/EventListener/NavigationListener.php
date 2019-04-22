@@ -11,10 +11,10 @@
 namespace Bwein\DatabaseBackup\EventListener;
 
 use Contao\BackendUser;
-use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\CoreBundle\Framework\ContaoFramework;
+use Contao\CoreBundle\Translation\Translator;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Translation\TranslatorInterface;
 
 class NavigationListener
 {
@@ -26,16 +26,16 @@ class NavigationListener
     /**
      * NavigationListener constructor.
      *
-     * @param RequestStack             $requestStack
-     * @param RouterInterface          $router
-     * @param TranslatorInterface      $translator
-     * @param ContaoFrameworkInterface $framework
+     * @param RequestStack    $requestStack
+     * @param RouterInterface $router
+     * @param Translator      $translator
+     * @param ContaoFramework $framework
      */
     public function __construct(
         RequestStack $requestStack,
         RouterInterface $router,
-        TranslatorInterface $translator,
-        ContaoFrameworkInterface $framework
+        Translator $translator,
+        ContaoFramework $framework
     ) {
         $this->requestStack = $requestStack;
         $this->router = $router;

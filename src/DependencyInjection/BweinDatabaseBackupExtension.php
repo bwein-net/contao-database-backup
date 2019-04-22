@@ -10,7 +10,6 @@
 
 namespace Bwein\DatabaseBackup\DependencyInjection;
 
-use Bwein\DatabaseBackup\Controller\BackendController;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
@@ -42,12 +41,6 @@ class BweinDatabaseBackupExtension extends ConfigurableExtension
         if ($container->hasDefinition('bwein.database_backup.dumper')) {
             $container->getDefinition('bwein.database_backup.dumper')
                 ->setArgument(0, $mergedConfig['max_backups']);
-        }
-
-        // Set the parameters as arguments for controller
-        if ($container->hasDefinition(BackendController::class)) {
-            $container->getDefinition(BackendController::class)
-                ->setArgument(0, $mergedConfig['download_filename_current']);
         }
     }
 }

@@ -28,7 +28,6 @@ class Configuration implements ConfigurationInterface
         $rootNode
             ->children()
                 ->integerNode('max_backups')->defaultValue(7)->end()
-                ->scalarNode('download_filename_current')->defaultValue('')->end()
             ->end();
 
         return $treeBuilder;

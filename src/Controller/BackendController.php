@@ -14,11 +14,13 @@ use Bwein\DatabaseBackup\Service\DatabaseBackupDumper;
 use Contao\BackendUser;
 use Contao\CoreBundle\Exception\AccessDeniedException;
 use Contao\CoreBundle\Exception\InternalServerErrorException;
-use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\CoreBundle\Framework\ContaoFramework;
+use Contao\CoreBundle\Translation\Translator;
 use Contao\Message;
 use Contao\System;
 use Doctrine\DBAL\Connection;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Exception;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -27,24 +29,18 @@ use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Translation\TranslatorInterface;
-use Twig_Environment;
+use Twig\Environment;
 use Twig_Extensions_Extension_Intl;
 
-class BackendController extends Controller
+class BackendController extends AbstractController
 {
     /**
-     * @var string
-     */
-    protected $downloadFileNameCurrent;
-
-    /**
-     * @var TranslatorInterface
+     * @var Translator
      */
     protected $translator;
 
     /**
-     * @var Twig_Environment
+     * @var Environment
      */
     protected $twig;
 
@@ -81,26 +77,24 @@ class BackendController extends Controller
     /**
      * BackendController constructor.
      *
-     * @param string                   $downloadFileNameCurrent
-     * @param RequestStack             $requestStack
-     * @param RouterInterface          $router
-     * @param TranslatorInterface      $translator
-     * @param ContaoFrameworkInterface $framework
-     * @param DatabaseBackupDumper     $dumper
-     * @param Twig_Environment         $twig
+     * @param string               $downloadFileNameCurrent
+     * @param RequestStack         $requestStack
+     * @param RouterInterface      $router
+     * @param Translator           $translator
+     * @param ContaoFramework      $framework
+     * @param DatabaseBackupDumper $dumper
+     * @param Environment          $twig
      */
     public function __construct(
-        string $downloadFileNameCurrent,
         Connection $db,
         RequestStack $requestStack,
         SessionInterface $session,
         RouterInterface $router,
         TokenStorageInterface $tokenStorage,
-        TranslatorInterface $translator,
-        Twig_Environment $twig,
+        Translator $translator,
+        Environment $twig,
         DatabaseBackupDumper $dumper
     ) {
-        $this->downloadFileNameCurrent = $downloadFileNameCurrent;
         $this->db = $db;
         $this->requestStack = $requestStack;
         $this->session = $session->getBag('contao_backend');
@@ -154,7 +148,7 @@ class BackendController extends Controller
             Message::addConfirmation(
                 $this->translator->trans('database_backup_create_successful')
             );
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             Message::addError($this->translator->trans($exception->getMessage()));
         }
 
@@ -171,9 +165,6 @@ class BackendController extends Controller
     {
         if (null !== ($file = $this->dumper->getBackupFile($fileName, $backupType))) {
             $downloadName = null;
-            if (empty($backupType) && !empty($this->downloadFileNameCurrent)) {
-                $downloadName = $this->downloadFileNameCurrent.$this->dumper::DEFAULT_EXTENSION;
-            }
 
             return $this->file($file, $downloadName);
         }
@@ -192,7 +183,7 @@ class BackendController extends Controller
         $parameters = [
             'backUrl' => System::getReferer(),
             'messages' => Message::generate(),
-            'backupTypes' => $this->dumper->getBackupTypesFilesList(),
+            'backups' => $this->dumper->getBackupFilesList(),
         ];
 
         return new Response($this->twig->render('@BweinDatabaseBackup/database_backup/index.html.twig', $parameters));

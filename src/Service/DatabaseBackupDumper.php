@@ -10,8 +10,13 @@
 
 namespace Bwein\DatabaseBackup\Service;
 
-use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\Config;
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Monolog\ContaoContext;
+use Contao\Date;
+use Contao\System;
+use Exception;
+use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -24,8 +29,9 @@ use Symfony\Component\Process\Process;
 
 class DatabaseBackupDumper
 {
-    const BACKUPS_PATH = '/var/db_backups';
+    const BACKUPS_PATH = \DIRECTORY_SEPARATOR.'var'.\DIRECTORY_SEPARATOR.'db_backups';
     const DEFAULT_EXTENSION = '.sql.gz';
+    /** @deprecated no longer created but to remove created symlink */
     const CURRENT_BACKUP = 'current'.self::DEFAULT_EXTENSION;
 
     const TYPE_MANUAL = 'manual';
@@ -70,16 +76,16 @@ class DatabaseBackupDumper
     /**
      * DatabaseBackupDumper constructor.
      *
-     * @param int                      $maxBackups
-     * @param string|null              $databaseHost
-     * @param int|null                 $databasePort
-     * @param string|null              $databaseName
-     * @param string|null              $databaseUser
-     * @param string|null              $databasePassword
-     * @param string                   $rootDir
-     * @param ContaoFrameworkInterface $framework
-     * @param LoggerInterface          $logger
-     * @param Filesystem|null          $fs
+     * @param int             $maxBackups
+     * @param string|null     $databaseHost
+     * @param int|null        $databasePort
+     * @param string|null     $databaseName
+     * @param string|null     $databaseUser
+     * @param string|null     $databasePassword
+     * @param string          $rootDir
+     * @param ContaoFramework $framework
+     * @param LoggerInterface $logger
+     * @param Filesystem|null $fs
      */
     public function __construct(
         int $maxBackups,
@@ -89,7 +95,7 @@ class DatabaseBackupDumper
         $databaseUser,
         $databasePassword,
         string $rootDir,
-        ContaoFrameworkInterface $framework,
+        ContaoFramework $framework,
         LoggerInterface $logger,
         Filesystem $fs = null
     ) {
@@ -129,14 +135,14 @@ class DatabaseBackupDumper
 
         try {
             $this->framework->initialize();
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             $this->output->writeln('<comment>Framework was not initialized!</comment>');
 
             return false;
         }
 
         if (empty($this->databaseName)) {
-            throw new \InvalidArgumentException('databaseName is not defined.');
+            throw new InvalidArgumentException('databaseName is not defined.');
         }
 
         $this->backupType = $backupType;
@@ -159,7 +165,6 @@ class DatabaseBackupDumper
 
         $this->validateBackupPath();
         $this->dumpDatabase();
-        $this->setCurrentSymlink();
         $this->logDump();
 
         $this->removeMaxCountOldest();
@@ -170,29 +175,37 @@ class DatabaseBackupDumper
     /**
      * @return array
      */
-    public function getBackupTypesFilesList()
+    public function getBackupFilesList()
     {
-        $return = [];
+        $this->validateBackupPath();
 
-        //add current as first type...
-        $filePath = $this->backupsPath.'/'.static::CURRENT_BACKUP;
-        if ($this->fs->exists($filePath)) {
-            $return['current'] = [new File($filePath)];
+        $finder = new Finder();
+        $finder->in($this->backupsPath);
+        $finder->files()->name('*'.static::DEFAULT_EXTENSION);
+        $finder->sort(
+            function (SplFileInfo $a, SplFileInfo $b) {
+                return $b->getMTime() - $a->getMTime();
+            }
+        );
+
+        if (!$finder->hasResults()) {
+            return [];
         }
 
-        foreach (static::getBackupTypes() as $backupType) {
-            $finder = new Finder();
-            $backupTypePath = $this->resolveBackupTypePath($backupType);
-            $this->validateBackupPath($backupTypePath);
-            $finder->in($this->backupsPath.'/'.$backupTypePath);
-            $finder->sort(
-                function (SplFileInfo $a, SplFileInfo $b) {
-                    return $b->getMTime() - $a->getMTime();
-                }
-            );
-            if ($finder->count() > 0) {
-                $return[$backupType] = $finder;
-            }
+        $this->framework->initialize();
+        System::loadLanguageFile('default');
+
+        $return = [];
+        foreach ($finder as $file) {
+            $return[] = [
+                'dateTimeRaw' => $file->getMTime(),
+                'dateTime' => Date::parse(Config::get('datimFormat'), $file->getMTime()),
+                'sizeRaw' => $file->getSize(),
+                'size' => System::getReadableSize($file->getSize()),
+                'type' => $file->getRelativePath(),
+                'filePath' => $file->getRelativePathname(),
+                'fileName' => $file->getFilename(),
+            ];
         }
 
         return $return;
@@ -208,9 +221,9 @@ class DatabaseBackupDumper
     {
         $backupTypePath = '';
         if (!empty($backupType)) {
-            $backupTypePath = $this->resolveBackupTypePath($backupType).'/';
+            $backupTypePath = $this->resolveBackupTypePath($backupType).\DIRECTORY_SEPARATOR;
         }
-        $filePath = $this->backupsPath.'/'.$backupTypePath.$fileName;
+        $filePath = $this->backupsPath.\DIRECTORY_SEPARATOR.$backupTypePath.$fileName;
 
         if (!$this->fs->exists($filePath)) {
             return null;
@@ -254,7 +267,8 @@ class DatabaseBackupDumper
         if (empty($backupTypePath)) {
             $backupTypePath = $this->backupTypePath;
         }
-        $this->fs->mkdir($this->backupsPath.'/'.$backupTypePath);
+        $this->fs->mkdir($this->backupsPath.\DIRECTORY_SEPARATOR.$backupTypePath);
+        $this->fs->remove($this->backupsPath.\DIRECTORY_SEPARATOR.static::CURRENT_BACKUP);
     }
 
     private function dumpDatabase()
@@ -272,7 +286,7 @@ class DatabaseBackupDumper
                 '| gzip -c',
             ];
 
-        $process = new Process(implode(' ', $dumpCommand));
+        $process = new Process($dumpCommand);
         $process->run();
 
         if (!$process->isSuccessful()) {
@@ -285,20 +299,8 @@ class DatabaseBackupDumper
     private function writeDumpFile($content)
     {
         $this->fs->dumpFile(
-            $this->backupsPath.'/'.$this->backupTypePath.'/'.$this->backupFileName,
+            $this->backupsPath.\DIRECTORY_SEPARATOR.$this->backupTypePath.\DIRECTORY_SEPARATOR.$this->backupFileName,
             $content
-        );
-    }
-
-    private function setCurrentSymlink()
-    {
-        $relativePath = $this->fs->makePathRelative(
-            $this->backupsPath.'/'.$this->backupTypePath.'/',
-            $this->backupsPath.'/'
-        );
-        $this->fs->symlink(
-            $relativePath.$this->backupFileName,
-            $this->backupsPath.'/'.static::CURRENT_BACKUP
         );
     }
 
@@ -321,7 +323,7 @@ class DatabaseBackupDumper
         }
 
         $finder = new Finder();
-        $finder->files()->in($this->backupsPath.'/'.$this->backupTypePath)->sort(
+        $finder->files()->in($this->backupsPath.\DIRECTORY_SEPARATOR.$this->backupTypePath)->sort(
             function (SplFileInfo $a, SplFileInfo $b) {
                 return $b->getMTime() - $a->getMTime();
             }

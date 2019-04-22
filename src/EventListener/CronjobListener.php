@@ -11,8 +11,9 @@
 namespace Bwein\DatabaseBackup\EventListener;
 
 use Bwein\DatabaseBackup\Service\DatabaseBackupDumper;
-use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Monolog\ContaoContext;
+use Exception;
 use Psr\Log\LoggerInterface;
 
 class CronjobListener
@@ -24,12 +25,12 @@ class CronjobListener
     /**
      * CronjobListener constructor.
      *
-     * @param ContaoFrameworkInterface $framework
-     * @param DatabaseBackupDumper     $dumper
-     * @param LoggerInterface          $logger
+     * @param ContaoFramework      $framework
+     * @param DatabaseBackupDumper $dumper
+     * @param LoggerInterface      $logger
      */
     public function __construct(
-        ContaoFrameworkInterface $framework,
+        ContaoFramework $framework,
         DatabaseBackupDumper $dumper,
         LoggerInterface $logger
     ) {
@@ -43,7 +44,7 @@ class CronjobListener
         try {
             $this->framework->initialize();
             $this->dumper->doBackup('auto');
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             $this->logger->error(
                 $exception->getMessage(),
                 ['contao' => new ContaoContext(__METHOD__, ContaoContext::ERROR)]
