@@ -8,6 +8,7 @@ services:
         class: Bwein\DatabaseBackup\Service\DatabaseBackupDumper
         arguments:
         - #set by extension
+        - #set by extension
         - '%database_host%'
         - '%database_port%'
         - '%database_name%'

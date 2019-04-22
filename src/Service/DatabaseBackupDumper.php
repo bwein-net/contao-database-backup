@@ -45,6 +45,7 @@ class DatabaseBackupDumper
     const DIRECTORY_FOR_MIGRATION_BACKUP = 'migration';
 
     protected $maxBackups;
+    protected $maxDays;
     protected $databaseHost;
     protected $databasePort;
     protected $databaseName;
@@ -77,6 +78,7 @@ class DatabaseBackupDumper
      * DatabaseBackupDumper constructor.
      *
      * @param int             $maxBackups
+     * @param int             $maxDays
      * @param string|null     $databaseHost
      * @param int|null        $databasePort
      * @param string|null     $databaseName
@@ -89,6 +91,7 @@ class DatabaseBackupDumper
      */
     public function __construct(
         int $maxBackups,
+        int $maxDays,
         $databaseHost,
         $databasePort,
         $databaseName,
@@ -100,6 +103,7 @@ class DatabaseBackupDumper
         Filesystem $fs = null
     ) {
         $this->maxBackups = $maxBackups;
+        $this->maxDays = $maxDays;
         $this->databaseHost = $databaseHost;
         $this->databasePort = $databasePort;
         $this->databaseName = $databaseName;
@@ -168,6 +172,7 @@ class DatabaseBackupDumper
         $this->logDump();
 
         $this->removeMaxCountOldest();
+        $this->removeMaxDays();
 
         return true;
     }
@@ -178,6 +183,7 @@ class DatabaseBackupDumper
     public function getBackupFilesList()
     {
         $this->validateBackupPath();
+        $this->removeMaxDays();
 
         $finder = new Finder();
         $finder->in($this->backupsPath);
@@ -287,7 +293,9 @@ class DatabaseBackupDumper
             ];
 
         $cmd = implode(' ', $dumpCommand);
-        $process = \method_exists(Process::class, 'fromShellCommandline') ? Process::fromShellCommandline($cmd) : new Process($cmd);
+        $process = \method_exists(Process::class, 'fromShellCommandline') ? Process::fromShellCommandline(
+            $cmd
+        ) : new Process($cmd);
         $process->run();
 
         if (!$process->isSuccessful()) {
@@ -337,9 +345,39 @@ class DatabaseBackupDumper
                 $this->fs->remove($file);
 
                 $message = sprintf(
-                    'Database backup "%s/%s" removed.',
+                    'Database backup "%s/%s" removed (max %d backups).',
                     $this->backupTypePath,
-                    $file->getFilename()
+                    $file->getFilename(),
+                    $this->maxBackups
+                );
+                $this->logger->info($message, ['contao' => new ContaoContext(__METHOD__, ContaoContext::GENERAL)]);
+                $this->output->writeln('<comment>'.$message.'</comment>');
+            }
+        }
+    }
+
+    private function removeMaxDays()
+    {
+        if (0 === $this->maxDays) {
+            return;
+        }
+
+        if (null === $this->output) {
+            $this->output = new NullOutput();
+        }
+
+        $finder = new Finder();
+        $finder->in($this->backupsPath);
+        $finder->files()->name('*'.static::DEFAULT_EXTENSION);
+
+        foreach ($finder as $file) {
+            if ((time() - $file->getMTime()) / (60 * 60 * 24) > $this->maxDays) {
+                $this->fs->remove($file);
+
+                $message = sprintf(
+                    'Database backup "%s" removed (max %d days).',
+                    $file->getRelativePathname(),
+                    $this->maxDays
                 );
                 $this->logger->info($message, ['contao' => new ContaoContext(__METHOD__, ContaoContext::GENERAL)]);
                 $this->output->writeln('<comment>'.$message.'</comment>');

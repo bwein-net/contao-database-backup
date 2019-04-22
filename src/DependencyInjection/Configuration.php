@@ -28,6 +28,7 @@ class Configuration implements ConfigurationInterface
         $rootNode
             ->children()
                 ->integerNode('max_backups')->defaultValue(7)->end()
+                ->integerNode('max_days')->defaultValue(14)->end()
             ->end();
 
         return $treeBuilder;

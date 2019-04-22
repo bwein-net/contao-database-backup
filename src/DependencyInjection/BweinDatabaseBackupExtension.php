@@ -40,7 +40,8 @@ class BweinDatabaseBackupExtension extends ConfigurableExtension
         // Set the parameters as arguments for dumper
         if ($container->hasDefinition('bwein.database_backup.dumper')) {
             $container->getDefinition('bwein.database_backup.dumper')
-                ->setArgument(0, $mergedConfig['max_backups']);
+                ->setArgument(0, $mergedConfig['max_backups'])
+                ->setArgument(1, $mergedConfig['max_days']);
         }
     }
 }

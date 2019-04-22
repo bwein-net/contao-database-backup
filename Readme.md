@@ -43,9 +43,12 @@ In the ``config/config.yml`` you can add the following optional parameters:
 # config/config.yml
 bwein_database_backup:
     max_backups: 5
+    max_days: 14
 ```
 
 The default of ``max_backups`` is ``7`` backups per type - ``0`` deactivates the automatic purge.
+
+The default of ``max_days`` is ``14`` days type independent - ``0`` deactivates the automatic purge.
 
 ## Environment Requirements
 
