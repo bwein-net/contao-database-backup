@@ -15,7 +15,6 @@ use Contao\BackendUser;
 use Contao\CoreBundle\Exception\AccessDeniedException;
 use Contao\CoreBundle\Exception\InternalServerErrorException;
 use Contao\CoreBundle\Framework\ContaoFramework;
-use Contao\CoreBundle\Translation\Translator;
 use Contao\Message;
 use Contao\System;
 use Doctrine\DBAL\Connection;
@@ -29,13 +28,14 @@ use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 use Twig\Environment;
 use Twig_Extensions_Extension_Intl;
 
 class BackendController extends AbstractController
 {
     /**
-     * @var Translator
+     * @var TranslatorInterface
      */
     protected $translator;
 
@@ -77,13 +77,8 @@ class BackendController extends AbstractController
     /**
      * BackendController constructor.
      *
-     * @param string               $downloadFileNameCurrent
-     * @param RequestStack         $requestStack
-     * @param RouterInterface      $router
-     * @param Translator           $translator
-     * @param ContaoFramework      $framework
-     * @param DatabaseBackupDumper $dumper
-     * @param Environment          $twig
+     * @param string          $downloadFileNameCurrent
+     * @param ContaoFramework $framework
      */
     public function __construct(
         Connection $db,
@@ -91,7 +86,7 @@ class BackendController extends AbstractController
         SessionInterface $session,
         RouterInterface $router,
         TokenStorageInterface $tokenStorage,
-        Translator $translator,
+        TranslatorInterface $translator,
         Environment $twig,
         DatabaseBackupDumper $dumper
     ) {
@@ -156,8 +151,7 @@ class BackendController extends AbstractController
     }
 
     /**
-     * @param string $fileName
-     * @param null   $backupType
+     * @param null $backupType
      *
      * @return BinaryFileResponse|RedirectResponse
      */

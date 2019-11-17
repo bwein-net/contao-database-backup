@@ -77,17 +77,11 @@ class DatabaseBackupDumper
     /**
      * DatabaseBackupDumper constructor.
      *
-     * @param int             $maxBackups
-     * @param int             $maxDays
-     * @param string|null     $databaseHost
-     * @param int|null        $databasePort
-     * @param string|null     $databaseName
-     * @param string|null     $databaseUser
-     * @param string|null     $databasePassword
-     * @param string          $rootDir
-     * @param ContaoFramework $framework
-     * @param LoggerInterface $logger
-     * @param Filesystem|null $fs
+     * @param string|null $databaseHost
+     * @param int|null    $databasePort
+     * @param string|null $databaseName
+     * @param string|null $databaseUser
+     * @param string|null $databasePassword
      */
     public function __construct(
         int $maxBackups,
@@ -124,10 +118,6 @@ class DatabaseBackupDumper
     }
 
     /**
-     * @param string|null          $backupType
-     * @param string|null          $filename
-     * @param OutputInterface|null $output
-     *
      * @return bool
      */
     public function doBackup(string $backupType = null, string $filename = null, OutputInterface $output = null)
@@ -218,8 +208,7 @@ class DatabaseBackupDumper
     }
 
     /**
-     * @param string $fileName
-     * @param null   $backupType
+     * @param null $backupType
      *
      * @return File|null
      */
@@ -239,8 +228,6 @@ class DatabaseBackupDumper
     }
 
     /**
-     * @param string $backupType
-     *
      * @return string
      */
     private function resolveBackupTypePath(string $backupType = '')
@@ -254,13 +241,7 @@ class DatabaseBackupDumper
         }
 
         if (!\in_array($backupType, static::getBackupTypes(), true)) {
-            throw new \InvalidArgumentException(
-                sprintf(
-                    'Unknown backup type %s. Allowed parameters are: %s',
-                    $backupType,
-                    implode(',', static::getBackupTypes())
-                )
-            );
+            throw new \InvalidArgumentException(sprintf('Unknown backup type %s. Allowed parameters are: %s', $backupType, implode(',', static::getBackupTypes())));
         }
 
         $path = (string) static::$backupTypesPaths[$backupType];

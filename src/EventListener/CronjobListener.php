@@ -24,10 +24,6 @@ class CronjobListener
 
     /**
      * CronjobListener constructor.
-     *
-     * @param ContaoFramework      $framework
-     * @param DatabaseBackupDumper $dumper
-     * @param LoggerInterface      $logger
      */
     public function __construct(
         ContaoFramework $framework,
