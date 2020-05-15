@@ -19,9 +19,7 @@
     ],
     "require": {
         "php": ">=7.0",
-        "contao/core-bundle": "^4.4",
-        "spe/filesize-extension-bundle": "^1.0",
-        "twig/extensions": "^1.5"
+        "contao/core-bundle": "^4.4"
     },
     "require-dev": {
         "contao/manager-plugin": "^2.0",

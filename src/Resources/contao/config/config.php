@@ -1,6 +1,13 @@
 <?php
 
-// Cron jobs
+/*
+ * This file is part of Database Backup for Contao Open Source CMS.
+ *
+ * (c) bwein.net
+ *
+ * @license MIT
+ */
+
 $GLOBALS['TL_CRON']['daily']['bwein_database_backup_auto'] = ['bwein.database_backup.listener.cronjob', 'onDaily'];
 
 // Hooks

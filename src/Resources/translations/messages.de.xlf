@@ -26,26 +26,6 @@
                 <source>database_backup_create_not_allowed</source>
                 <target>Backup erstellen nicht erlaubt!</target>
             </trans-unit>
-            <trans-unit id="database_backup_list_title.current">
-                <source>database_backup_list_title.current</source>
-                <target>Neuestes Backup</target>
-            </trans-unit>
-            <trans-unit id="database_backup_list_title.manual">
-                <source>database_backup_list_title.manual</source>
-                <target>Manuelle Backups</target>
-            </trans-unit>
-            <trans-unit id="database_backup_list_title.auto">
-                <source>database_backup_list_title.auto</source>
-                <target>Automatische Backups</target>
-            </trans-unit>
-            <trans-unit id="database_backup_list_title.deploy">
-                <source>database_backup_list_title.deploy</source>
-                <target>Deployment Backups</target>
-            </trans-unit>
-            <trans-unit id="database_backup_list_title.migration">
-                <source>database_backup_list_title.migration</source>
-                <target>Migration Backups</target>
-            </trans-unit>
             <trans-unit id="database_backup_date">
                 <source>database_backup_date</source>
                 <target>Datum</target>
@@ -53,6 +33,26 @@
             <trans-unit id="database_backup_size">
                 <source>database_backup_size</source>
                 <target>Größe</target>
+            </trans-unit>
+            <trans-unit id="database_backup_type">
+                <source>database_backup_type</source>
+                <target>Typ</target>
+            </trans-unit>
+            <trans-unit id="database_backup_type_options.manual">
+                <source>database_backup_type_options.manual</source>
+                <target>Manuell</target>
+            </trans-unit>
+            <trans-unit id="database_backup_type_options.auto">
+                <source>database_backup_type_options.auto</source>
+                <target>Automatisch</target>
+            </trans-unit>
+            <trans-unit id="database_backup_type_options.deploy">
+                <source>database_backup_type_options.deploy</source>
+                <target>Deployment</target>
+            </trans-unit>
+            <trans-unit id="database_backup_type_options.migration">
+                <source>database_backup_type_options.migration</source>
+                <target>Migration</target>
             </trans-unit>
             <trans-unit id="database_backup_download">
                 <source>database_backup_download</source>

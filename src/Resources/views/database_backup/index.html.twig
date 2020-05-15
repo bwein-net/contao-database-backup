@@ -15,10 +15,7 @@
 
         {% include '@BweinDatabaseBackup/database_backup/snippets/create.html.twig' only %}
 
-        {% for type,backups in backupTypes %}
-            {% include '@BweinDatabaseBackup/database_backup/snippets/list.html.twig'
-                with { 'type': type, 'backups' : backups } only %}
-        {% endfor %}
+        {% include '@BweinDatabaseBackup/database_backup/snippets/list.html.twig' with { 'backups' : backups } only %}
     </div>
 
 {% endblock %}

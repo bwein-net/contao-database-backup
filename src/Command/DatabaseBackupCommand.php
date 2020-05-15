@@ -11,19 +11,17 @@
 namespace Bwein\DatabaseBackup\Command;
 
 use Bwein\DatabaseBackup\Service\DatabaseBackupDumper;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class DatabaseBackupCommand extends ContainerAwareCommand
+class DatabaseBackupCommand extends Command
 {
     protected $dumper;
 
     /**
      * DatabaseBackupCommand constructor.
-     *
-     * @param DatabaseBackupDumper $dumper
      */
     public function __construct(DatabaseBackupDumper $dumper)
     {
@@ -48,9 +46,6 @@ class DatabaseBackupCommand extends ContainerAwareCommand
     }
 
     /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     *
      * @return int|void|null
      */
     protected function execute(InputInterface $input, OutputInterface $output)

@@ -43,12 +43,12 @@ In the ``config/config.yml`` you can add the following optional parameters:
 # config/config.yml
 bwein_database_backup:
     max_backups: 5
-    download_filename_current: 'bwein_database'
+    max_days: 14
 ```
 
 The default of ``max_backups`` is ``7`` backups per type - ``0`` deactivates the automatic purge.
 
-The download filename of the current backup can optionally be configured with ``download_filename_current`` - default with value ``''`` would be ``current.sql.gz``. In the example the filename would be ``'bwein_database.sql.gz'``. The file extension ``.sql.gz`` is always added.
+The default of ``max_days`` is ``14`` days type independent - ``0`` deactivates the automatic purge.
 
 ## Environment Requirements
 
