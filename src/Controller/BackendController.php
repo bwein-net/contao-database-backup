@@ -30,7 +30,6 @@ use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 use Twig\Environment;
-use Twig_Extensions_Extension_Intl;
 
 class BackendController extends AbstractController
 {
@@ -173,7 +172,6 @@ class BackendController extends AbstractController
      */
     private function listAction()
     {
-        $this->twig->addExtension(new Twig_Extensions_Extension_Intl());
         $parameters = [
             'backUrl' => System::getReferer(),
             'messages' => Message::generate(),
