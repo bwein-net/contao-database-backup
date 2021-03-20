@@ -52,6 +52,6 @@ The default of ``max_days`` is ``14`` days type independent - ``0`` deactivates 
 
 ## Environment Requirements
 
-- PHP 7.0
+- PHP 7.2
 - `mysqldump` as global command-line binary
 - `gzip` as global command-line binary
