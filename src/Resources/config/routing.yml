@@ -1,8 +1,0 @@
-contao_database_backup:
-    path: /contao/database_backup
-    defaults:
-        _scope: backend
-        _token_check: true
-        _controller: "BweinDatabaseBackupBundle:Backend:index"
-    requirements:
-

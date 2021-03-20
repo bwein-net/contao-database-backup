@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Database Backup for Contao Open Source CMS.
  *
@@ -17,19 +19,21 @@ class Configuration implements ConfigurationInterface
 {
     /**
      * Generates the configuration tree builder.
-     *
-     * @return TreeBuilder
      */
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder(): TreeBuilder
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('bwein_database_backup');
-
-        $rootNode
-            ->children()
-                ->integerNode('max_backups')->defaultValue(7)->end()
-                ->integerNode('max_days')->defaultValue(14)->end()
-            ->end();
+        $treeBuilder = new TreeBuilder('bwein_database_backup');
+        $treeBuilder
+            ->getRootNode()
+                ->children()
+                    ->integerNode('max_backups')
+                        ->defaultValue(7)
+                    ->end()
+                    ->integerNode('max_days')
+                        ->defaultValue(14)
+                    ->end()
+                ->end()
+        ;
 
         return $treeBuilder;
     }

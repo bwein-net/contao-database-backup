@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Database Backup for Contao Open Source CMS.
  *
@@ -11,51 +13,52 @@
 namespace Bwein\DatabaseBackup\EventListener;
 
 use Contao\BackendUser;
-use Contao\CoreBundle\Framework\ContaoFramework;
+use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
+/**
+ * @Hook("getUserNavigation")
+ */
 class NavigationListener
 {
-    protected $requestStack;
-    protected $router;
-    protected $translator;
-    protected $framework;
+    private $requestStack;
+    private $router;
+    private $translator;
+    private $tokenStorage;
 
-    /**
-     * NavigationListener constructor.
-     */
-    public function __construct(
-        RequestStack $requestStack,
-        RouterInterface $router,
-        TranslatorInterface $translator,
-        ContaoFramework $framework
-    ) {
+    public function __construct(RequestStack $requestStack, RouterInterface $router, TranslatorInterface $translator, TokenStorageInterface $tokenStorage)
+    {
         $this->requestStack = $requestStack;
         $this->router = $router;
         $this->translator = $translator;
-        $this->framework = $framework;
+        $this->tokenStorage = $tokenStorage;
     }
 
-    /**
-     * @return array
-     */
-    public function onGetUserNavigation(array $modules)
+    public function __invoke(array $modules, bool $showAll): array
     {
         $request = $this->requestStack->getCurrentRequest();
 
-        $this->framework->initialize();
+        if (null === $request) {
+            return $modules;
+        }
 
-        /** @var BackendUser $backendUser */
-        $backendUser = $this->framework->getAdapter(BackendUser::class)->getInstance();
+        $token = $this->tokenStorage->getToken();
 
-        if ($backendUser->hasAccess('database_backup', 'modules')) {
+        if (null === $token) {
+            throw new \RuntimeException('No token provided');
+        }
+
+        $user = $token->getUser();
+
+        if (!$user instanceof BackendUser || $user->hasAccess('database_backup', 'modules')) {
             $modules['system']['modules']['database_backup'] = [
                 'label' => $this->translator->trans('database_backup_title'),
                 'class' => 'navigation database_backup',
-                'href' => $this->router->generate('contao_database_backup'),
-                'isActive' => 'contao_database_backup' === $request->attributes->get('_route'),
+                'href' => $this->router->generate('bwein_contao_database_backup'),
+                'isActive' => 'bwein_contao_database_backup' === $request->attributes->get('_route'),
             ];
         }
 

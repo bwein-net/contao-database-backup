@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Database Backup for Contao Open Source CMS.
  *
@@ -13,110 +15,59 @@ namespace Bwein\DatabaseBackup\Controller;
 use Bwein\DatabaseBackup\Service\DatabaseBackupDumper;
 use Contao\BackendUser;
 use Contao\CoreBundle\Exception\AccessDeniedException;
-use Contao\CoreBundle\Exception\InternalServerErrorException;
-use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Message;
 use Contao\System;
-use Doctrine\DBAL\Connection;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Terminal42\ServiceAnnotationBundle\Annotation\ServiceTag;
 use Twig\Environment;
 
+/**
+ * @Route("/contao/database_backup", name="bwein_contao_database_backup", defaults={"_scope": "backend"})
+ * @ServiceTag("controller.service_arguments")
+ */
 class BackendController extends AbstractController
 {
-    /**
-     * @var TranslatorInterface
-     */
-    protected $translator;
-
-    /**
-     * @var Environment
-     */
-    protected $twig;
-
-    /**
-     * @var DatabaseBackupDumper
-     */
-    protected $dumper;
-
-    /**
-     * @var Connection
-     */
-    private $db;
-
-    /**
-     * @var RequestStack
-     */
-    private $requestStack;
-
-    /**
-     * @var AttributeBagInterface
-     */
-    private $session;
-
-    /**
-     * @var RouterInterface
-     */
     private $router;
+    private $tokenStorage;
+    private $translator;
+    private $twig;
+    private $dumper;
 
-    /**
-     * @var BackendUser
-     */
-    private $user;
-
-    /**
-     * BackendController constructor.
-     *
-     * @param string          $downloadFileNameCurrent
-     * @param ContaoFramework $framework
-     */
-    public function __construct(
-        Connection $db,
-        RequestStack $requestStack,
-        SessionInterface $session,
-        RouterInterface $router,
-        TokenStorageInterface $tokenStorage,
-        TranslatorInterface $translator,
-        Environment $twig,
-        DatabaseBackupDumper $dumper
-    ) {
-        $this->db = $db;
-        $this->requestStack = $requestStack;
-        $this->session = $session->getBag('contao_backend');
+    public function __construct(RouterInterface $router, TokenStorageInterface $tokenStorage, TranslatorInterface $translator, Environment $twig, DatabaseBackupDumper $dumper)
+    {
         $this->router = $router;
-        $this->user = $tokenStorage->getToken()->getUser();
+        $this->tokenStorage = $tokenStorage;
         $this->translator = $translator;
         $this->twig = $twig;
         $this->dumper = $dumper;
     }
 
-    /**
-     * @return BinaryFileResponse|RedirectResponse|Response
-     */
-    public function indexAction()
+    public function __invoke(Request $request): Response
     {
-        $request = $this->requestStack->getCurrentRequest();
-        if (null === $request) {
-            throw new InternalServerErrorException('No request object given.');
+        $token = $this->tokenStorage->getToken();
+
+        if (null === $token) {
+            throw new \RuntimeException('No token provided');
         }
 
-        /* @var BackendUser $backendUser */
-        if (!$this->user->hasAccess('database_backup', 'modules')) {
+        $user = $token->getUser();
+
+        if (!$user instanceof BackendUser || !$user->hasAccess('database_backup', 'modules')) {
             throw new AccessDeniedException('Not enough permissions to access database_backup.');
         }
 
         if (!empty($createType = $request->get('create'))) {
             return $this->createAction($createType);
         }
+
         if (!empty($fileName = $request->get('download'))) {
             return $this->downloadAction($fileName, $request->get('backupType'));
         }
@@ -124,12 +75,7 @@ class BackendController extends AbstractController
         return $this->listAction();
     }
 
-    /**
-     * @param null $backupType
-     *
-     * @return RedirectResponse
-     */
-    private function createAction($backupType = null)
+    private function createAction(?string $backupType = null): RedirectResponse
     {
         if ('manual' !== $backupType) {
             Message::addError(
@@ -146,15 +92,10 @@ class BackendController extends AbstractController
             Message::addError($this->translator->trans($exception->getMessage()));
         }
 
-        return new RedirectResponse($this->router->generate('contao_database_backup'), 303);
+        return new RedirectResponse($this->router->generate('bwein_contao_database_backup'), 303);
     }
 
-    /**
-     * @param null $backupType
-     *
-     * @return BinaryFileResponse|RedirectResponse
-     */
-    private function downloadAction(string $fileName, $backupType = null)
+    private function downloadAction(string $fileName, ?string $backupType = null): Response
     {
         if (null !== ($file = $this->dumper->getBackupFile($fileName, $backupType))) {
             $downloadName = null;
@@ -164,13 +105,10 @@ class BackendController extends AbstractController
 
         Message::addError($this->translator->trans('database_backup_not_found'));
 
-        return new RedirectResponse($this->router->generate('contao_database_backup'), 303);
+        return new RedirectResponse($this->router->generate('bwein_contao_database_backup'), 303);
     }
 
-    /**
-     * @return Response
-     */
-    private function listAction()
+    private function listAction(): Response
     {
         $parameters = [
             'backUrl' => System::getReferer(),

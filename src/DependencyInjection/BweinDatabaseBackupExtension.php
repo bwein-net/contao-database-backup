@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Database Backup for Contao Open Source CMS.
  *
@@ -10,6 +12,7 @@
 
 namespace Bwein\DatabaseBackup\DependencyInjection;
 
+use Bwein\DatabaseBackup\Service\DatabaseBackupDumper;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
@@ -20,28 +23,20 @@ use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
  */
 class BweinDatabaseBackupExtension extends ConfigurableExtension
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getAlias()
+    public function getAlias(): string
     {
         return 'bwein_database_backup';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function loadInternal(array $mergedConfig, ContainerBuilder $container)
+    protected function loadInternal(array $mergedConfig, ContainerBuilder $container): void
     {
-        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-        $loader->load('listener.yml');
-        $loader->load('services.yml');
+        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../../config'));
+        $loader->load('services.yaml');
 
         // Set the parameters as arguments for dumper
-        if ($container->hasDefinition('bwein.database_backup.dumper')) {
-            $container->getDefinition('bwein.database_backup.dumper')
-                ->setArgument(0, $mergedConfig['max_backups'])
-                ->setArgument(1, $mergedConfig['max_days']);
-        }
+        $container->getDefinition(DatabaseBackupDumper::class)
+            ->setArgument(0, $mergedConfig['max_backups'])
+            ->setArgument(1, $mergedConfig['max_days'])
+            ;
     }
 }

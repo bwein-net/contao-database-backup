@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Database Backup for Contao Open Source CMS.
  *
@@ -18,13 +20,11 @@ use Contao\ManagerPlugin\Bundle\Parser\ParserInterface;
 use Contao\ManagerPlugin\Routing\RoutingPluginInterface;
 use Symfony\Component\Config\Loader\LoaderResolverInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\Routing\RouteCollection;
 
 class Plugin implements BundlePluginInterface, RoutingPluginInterface
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getBundles(ParserInterface $parser)
+    public function getBundles(ParserInterface $parser): array
     {
         return [
             BundleConfig::create(BweinDatabaseBackupBundle::class)
@@ -32,12 +32,9 @@ class Plugin implements BundlePluginInterface, RoutingPluginInterface
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getRouteCollection(LoaderResolverInterface $resolver, KernelInterface $kernel)
+    public function getRouteCollection(LoaderResolverInterface $resolver, KernelInterface $kernel): ?RouteCollection
     {
-        $file = __DIR__.'/../Resources/config/routing.yml';
+        $file = __DIR__.'/../../config/routes.yaml';
 
         return $resolver->resolve($file)->load($file);
     }

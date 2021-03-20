@@ -28,7 +28,7 @@
                         </td>
                         <td width="20%">
                             {% set url_params = { 'backupType': backup.type, 'download': backup.fileName } %}
-                            <a href="{{ path('contao_database_backup', url_params) }}"
+                            <a href="{{ path('bwein_contao_database_backup', url_params) }}"
                                title="{{ 'database_backup_download' | trans }} {{ backup.dateTime }}"
                                class="tl_submit download">
                                 {{ 'database_backup_download' | trans }}

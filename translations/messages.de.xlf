@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file datatype="plaintext" original="messages.en.xlf" source-language="en" target-language="de">
+        <body>
+            <trans-unit id="database_backup_title" resname="database_backup_title">
+                <source>Database Backup</source>
+                <target>Datenbank-Backup</target>
+            </trans-unit>
+            <trans-unit id="database_backup_button_back" resname="database_backup_button_back">
+                <source>Back</source>
+                <target>Zurück</target>
+            </trans-unit>
+            <trans-unit id="database_backup_create_title" resname="database_backup_create_title">
+                <source>Create backup</source>
+                <target>Backup erstellen</target>
+            </trans-unit>
+            <trans-unit id="database_backup_create_manual" resname="database_backup_create_manual">
+                <source>Manual Backup</source>
+                <target>Manuelles Backup</target>
+            </trans-unit>
+            <trans-unit id="database_backup_create_successful" resname="database_backup_create_successful">
+                <source>Backup successfully created!</source>
+                <target>Backup erfolgreich erstellt!</target>
+            </trans-unit>
+            <trans-unit id="database_backup_create_not_allowed" resname="database_backup_create_not_allowed">
+                <source>Create backup not allowed!</source>
+                <target>Backup erstellen nicht erlaubt!</target>
+            </trans-unit>
+            <trans-unit id="database_backup_date" resname="database_backup_date">
+                <source>Date</source>
+                <target>Datum</target>
+            </trans-unit>
+            <trans-unit id="database_backup_size" resname="database_backup_size">
+                <source>Size</source>
+                <target>Größe</target>
+            </trans-unit>
+            <trans-unit id="database_backup_type" resname="database_backup_type">
+                <source>Type</source>
+                <target>Typ</target>
+            </trans-unit>
+            <trans-unit id="database_backup_type_options.manual" resname="database_backup_type_options.manual">
+                <source>Manual</source>
+                <target>Manuell</target>
+            </trans-unit>
+            <trans-unit id="database_backup_type_options.auto" resname="database_backup_type_options.auto">
+                <source>Automatic</source>
+                <target>Automatisch</target>
+            </trans-unit>
+            <trans-unit id="database_backup_type_options.deploy" resname="database_backup_type_options.deploy">
+                <source>Deployment</source>
+                <target>Deployment</target>
+            </trans-unit>
+            <trans-unit id="database_backup_type_options.migration" resname="database_backup_type_options.migration">
+                <source>Migration</source>
+                <target>Migration</target>
+            </trans-unit>
+            <trans-unit id="database_backup_download" resname="database_backup_download">
+                <source>Download</source>
+                <target>Download</target>
+            </trans-unit>
+            <trans-unit id="database_backup_not_found" resname="database_backup_not_found">
+                <source>Backup not found!</source>
+                <target>Backup nicht gefunden!</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

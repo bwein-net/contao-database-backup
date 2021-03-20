@@ -1,6 +1,6 @@
 # Database Backup for Contao Open Source CMS
 
-This Bundle provides an console command to do easy backups of the contao database.
+This Bundle provides a console command to do easy backups of the contao database.
 
 The backups can be downloaded in the backend and backups can be created manually by backend users.
 

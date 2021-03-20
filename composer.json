@@ -1,5 +1,6 @@
 {
     "name": "bwein-net/contao-database-backup",
+    "type": "contao-bundle",
     "description": "Database Backup for Contao Open Source CMS",
     "keywords": [
         "contao",
@@ -9,7 +10,6 @@
         "dump",
         "command"
     ],
-    "type": "contao-bundle",
     "license": "MIT",
     "authors": [
         {
@@ -18,12 +18,12 @@
         }
     ],
     "require": {
-        "php": ">=7.0",
-        "contao/core-bundle": "^4.4"
+        "php": ">=7.2",
+        "contao/core-bundle": "^4.9"
     },
     "require-dev": {
         "contao/manager-plugin": "^2.0",
-        "friendsofphp/php-cs-fixer": "^2.12"
+        "contao/easy-coding-standard": "^3.0"
     },
     "conflict": {
         "contao/manager-plugin": "<2.0 || >=3.0"
@@ -35,5 +35,10 @@
     },
     "extra": {
         "contao-manager-plugin": "Bwein\\DatabaseBackup\\ContaoManager\\Plugin"
+    },
+    "scripts": {
+        "ecs": [
+            "vendor/bin/ecs check contao/ src/ --config ecs_default.php --fix --ansi"
+        ]
     }
 }
