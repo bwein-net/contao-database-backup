@@ -226,11 +226,11 @@ class DatabaseBackupDumper
         $dumpCommand =
             [
                 'mysqldump',
-                $this->databaseName,
-                '--host='.$this->databaseHost,
+                escapeshellarg($this->databaseName),
+                '--host='.escapeshellarg($this->databaseHost),
                 '--port='.$this->databasePort,
-                '--user='.$this->databaseUser,
-                '--password='.$this->databasePassword,
+                '--user='.escapeshellarg($this->databaseUser),
+                '--password='.escapeshellarg($this->databasePassword),
                 '--add-locks',
                 '--add-drop-table',
                 '| gzip -c',
