@@ -1,6 +1,5 @@
 {
   "name": "bwein-net/contao-database-backup",
-  "type": "contao-bundle",
   "description": "Database Backup for Contao Open Source CMS",
   "keywords": [
     "contao",
@@ -10,11 +9,19 @@
     "dump",
     "command"
   ],
+  "type": "contao-bundle",
+  "homepage": "https://github.com/bwein-net/contao-database-backup",
   "license": "MIT",
   "authors": [
     {
       "name": "bwein.net",
-      "homepage": "https://bwein.net/"
+      "homepage": "https://bwein.net/",
+      "role": "Developer"
+    },
+    {
+      "name": "Ralf Baussenwein",
+      "homepage": "https://github.com/rabauss",
+      "role": "Developer"
     }
   ],
   "support": {
@@ -46,9 +53,6 @@
   "require-dev": {
     "contao/easy-coding-standard": "^3.0",
     "contao/manager-plugin": "^2.0"
-  },
-  "conflict": {
-    "contao/manager-plugin": "<2.0 || >=3.0"
   },
   "autoload": {
     "psr-4": {
