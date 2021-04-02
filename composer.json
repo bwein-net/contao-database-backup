@@ -17,6 +17,10 @@
       "homepage": "https://bwein.net/"
     }
   ],
+  "support": {
+    "issues": "https://github.com/bwein-net/contao-database-backup/issues",
+    "source": "https://github.com/bwein-net/contao-database-backup"
+  },
   "funding": [
     {
       "type": "github",
