@@ -17,6 +17,12 @@
             "homepage": "https://bwein.net/"
         }
     ],
+    "funding": [
+        {
+            "type": "github",
+            "url": "https://github.com/sponsors/rabauss"
+        }
+    ],
     "require": {
         "php": ">=7.2",
         "contao/core-bundle": "^4.9"
