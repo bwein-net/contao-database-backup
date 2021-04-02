@@ -1,50 +1,62 @@
 {
-    "name": "bwein-net/contao-database-backup",
-    "type": "contao-bundle",
-    "description": "Database Backup for Contao Open Source CMS",
-    "keywords": [
-        "contao",
-        "database",
-        "backup",
-        "sql",
-        "dump",
-        "command"
-    ],
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "bwein.net",
-            "homepage": "https://bwein.net/"
-        }
-    ],
-    "funding": [
-        {
-            "type": "github",
-            "url": "https://github.com/sponsors/rabauss"
-        }
-    ],
-    "require": {
-        "php": ">=7.2",
-        "contao/core-bundle": "^4.9"
-    },
-    "require-dev": {
-        "contao/manager-plugin": "^2.0",
-        "contao/easy-coding-standard": "^3.0"
-    },
-    "conflict": {
-        "contao/manager-plugin": "<2.0 || >=3.0"
-    },
-    "autoload": {
-        "psr-4": {
-            "Bwein\\DatabaseBackup\\": "src/"
-        }
-    },
-    "extra": {
-        "contao-manager-plugin": "Bwein\\DatabaseBackup\\ContaoManager\\Plugin"
-    },
-    "scripts": {
-        "ecs": [
-            "vendor/bin/ecs check contao/ src/ --config ecs_default.php --fix --ansi"
-        ]
+  "name": "bwein-net/contao-database-backup",
+  "type": "contao-bundle",
+  "description": "Database Backup for Contao Open Source CMS",
+  "keywords": [
+    "contao",
+    "database",
+    "backup",
+    "sql",
+    "dump",
+    "command"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "bwein.net",
+      "homepage": "https://bwein.net/"
     }
+  ],
+  "funding": [
+    {
+      "type": "github",
+      "url": "https://github.com/sponsors/rabauss"
+    }
+  ],
+  "require": {
+    "php": "^7.2 || ^8.0",
+    "contao/core-bundle": "^4.9",
+    "symfony/config": "4.4.* || 5.2.*",
+    "symfony/console": "4.4.* || 5.2.*",
+    "symfony/dependency-injection": "4.4.* || 5.2.*",
+    "symfony/filesystem": "4.4.* || 5.2.*",
+    "symfony/finder": "4.4.* || 5.2.*",
+    "symfony/framework-bundle": "4.4.* || 5.2.*",
+    "symfony/http-foundation": "4.4.* || 5.2.*",
+    "symfony/http-kernel": "4.4.* || 5.2.*",
+    "symfony/process": "4.4.* || 5.2.*",
+    "symfony/routing": "4.4.* || 5.2.*",
+    "symfony/security-bundle": "4.4.* || 5.2.*",
+    "symfony/translation": "4.4.* || 5.2.*"
+  },
+  "require-dev": {
+    "contao/easy-coding-standard": "^3.0",
+    "contao/manager-plugin": "^2.0"
+  },
+  "conflict": {
+    "contao/manager-plugin": "<2.0 || >=3.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Bwein\\DatabaseBackup\\": "src/"
+    }
+  },
+  "extra": {
+    "contao-manager-plugin": "Bwein\\DatabaseBackup\\ContaoManager\\Plugin"
+  },
+  "scripts": {
+    "ecs": [
+      "vendor/bin/ecs check contao/ src/ --config ecs_default.php --fix --ansi"
+    ]
+  }
 }
