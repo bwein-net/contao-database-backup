@@ -64,7 +64,7 @@
   },
   "scripts": {
     "ecs": [
-      "vendor/bin/ecs check contao/ src/ --config ecs_default.php --fix --ansi"
+      "vendor/bin/ecs check contao/ src/ --fix --ansi"
     ]
   }
 }
