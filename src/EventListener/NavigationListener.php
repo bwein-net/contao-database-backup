@@ -56,6 +56,7 @@ class NavigationListener
         if (!$user instanceof BackendUser || $user->hasAccess('database_backup', 'modules')) {
             $modules['system']['modules']['database_backup'] = [
                 'label' => $this->translator->trans('database_backup_title'),
+                'title' => '',
                 'class' => 'navigation database_backup',
                 'href' => $this->router->generate('bwein_contao_database_backup'),
                 'isActive' => 'bwein_contao_database_backup' === $request->attributes->get('_route'),
