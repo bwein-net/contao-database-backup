@@ -9,27 +9,27 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 use Symplify\EasyCodingStandard\ValueObject\Option;
 
 return static function (ContainerConfigurator $containerConfigurator): void {
-    $vendorDir = __DIR__.'/vendor';
+    $vendorDir = __DIR__ . '/vendor';
 
     if (!is_dir($vendorDir)) {
-        $vendorDir = __DIR__.'/../../vendor';
+        $vendorDir = __DIR__ . '/../../vendor';
     }
 
-    $containerConfigurator->import($vendorDir.'/contao/easy-coding-standard/config/self.php');
+    $containerConfigurator->import($vendorDir . '/contao/easy-coding-standard/config/self.php');
 
     $parameters = $containerConfigurator->parameters();
-    $parameters->set(
-        Option::SKIP,
-        [
-            '*/templates/*.html5',
-            MethodChainingIndentationFixer::class => [
-                '*/DependencyInjection/Configuration.php',
-            ],
-            DisallowArrayTypeHintSyntaxSniff::class => [
-                '*Model.php',
-            ],
-        ]
-    );
+
+    $skips                                          = [];
+    $skips[MethodChainingIndentationFixer::class]   = ['*/DependencyInjection/Configuration.php'];
+    $skips[DisallowArrayTypeHintSyntaxSniff::class] = ['*Model.php'];
+
+    if (defined(Option::class . '::EXCLUDE_PATHS')) {
+        $parameters->set(Option::EXCLUDE_PATHS, ['*/templates/*.html5']);
+    } else {
+        $skips[] = '*/templates/*.html5';
+    }
+
+    $parameters->set(Option::SKIP, $skips);
 
     $services = $containerConfigurator->services();
     $services
@@ -39,7 +39,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
             [
                 [
                     'header' => "This file is part of Database Backup for Contao Open Source CMS.\n\n(c) bwein.net\n\n@license MIT",
-                ],
+                ]
             ]
         );
 };
