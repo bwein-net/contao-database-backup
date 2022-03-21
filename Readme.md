@@ -15,22 +15,6 @@ Install the bundle via Composer:
 composer require bwein-net/contao-database-backup
 ```
 
-
-## Configuration
-
-In the ``config/config.yml`` you can add the following optional parameters:
-
-```yaml
-# config/config.yml
-bwein_database_backup:
-    max_backups: 5
-    max_days: 14
-```
-
-The default of ``max_backups`` is ``7`` backups per type - ``0`` deactivates the automatic purge.
-
-The default of ``max_days`` is ``14`` days type independent - ``0`` deactivates the automatic purge.
-
 ## Environment Requirements
 
 - PHP 7.2
@@ -38,6 +22,20 @@ The default of ``max_days`` is ``14`` days type independent - ``0`` deactivates 
 - `gzip` as global command-line binary
 
 ## Migration from version 1 to 2
+
+### Replace Configuration
+
+The configuration `bwein_database_backup` has to be replaced by the core configuration:
+
+```yaml
+# config/config.yml
+contao:
+  backup:
+    keep_max: 7
+    keep_intervals: '14D'
+```
+
+see: https://docs.contao.org/manual/en/cli/db-backups/#configuration
 
 ### Add Cronjob
 
