@@ -31,6 +31,15 @@ contao:
 
 see: https://docs.contao.org/manual/en/cli/db-backups/#configuration
 
+### Run Migration
+
+The existing backups will be automatically moved from `var/db_backups` to `var/backups` with a migration by
+running `contao:migrate` or use the Contao Install Tool.
+
+### Change backup directory
+
+If you use deploy tools like deployer that define shared dirs, you need to change the backup directory from `var/db_backups` to `var/backups`!
+
 ### Add Cronjob
 
 The cronjob listener has been removed so you have to add a manual daily routine:
