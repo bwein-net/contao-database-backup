@@ -2,6 +2,8 @@ services:
     _defaults:
         autowire: true
         autoconfigure: true
+        bind:
+            $backupManager: '@contao.doctrine.backup_manager'
 
     Bwein\DatabaseBackup\:
         resource: '../src/*'
