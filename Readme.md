@@ -15,12 +15,6 @@ Install the bundle via Composer:
 composer require bwein-net/contao-database-backup
 ```
 
-## Environment Requirements
-
-- PHP 7.2
-- `mysqldump` as global command-line binary
-- `gzip` as global command-line binary
-
 ## Migration from version 1 to 2
 
 ### Replace Configuration
