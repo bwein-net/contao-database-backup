@@ -7,7 +7,7 @@
     "backup",
     "sql",
     "dump",
-    "command"
+    "backend"
   ],
   "type": "contao-bundle",
   "homepage": "https://github.com/bwein-net/contao-database-backup",
