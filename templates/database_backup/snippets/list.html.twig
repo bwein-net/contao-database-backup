@@ -6,7 +6,6 @@
                 <tr>
                     <th>{{ 'database_backup_date' | trans }}</th>
                     <th>{{ 'database_backup_size' | trans }}</th>
-                    <th>{{ 'database_backup_type' | trans }}</th>
                     <th></th>
                 </tr>
                 </thead>
@@ -17,17 +16,14 @@
                         {% set cssClass = 'odd' %}
                     {% endif %}
                     <tr class="{{ cssClass }}">
-                        <td class="nw" width="30%">
+                        <td class="nw" width="40%">
                             {{ backup.dateTime }}
                         </td>
-                        <td width="25%">
+                        <td width="40%">
                             {{ backup.size }}
                         </td>
-                        <td width="25%">
-                            {{ ('database_backup_type_options.'~backup.type) | trans }}
-                        </td>
                         <td width="20%">
-                            {% set url_params = { 'backupType': backup.type, 'download': backup.fileName } %}
+                            {% set url_params = { 'download': backup.fileName } %}
                             <a href="{{ path('bwein_contao_database_backup', url_params) }}"
                                title="{{ 'database_backup_download' | trans }} {{ backup.dateTime }}"
                                class="tl_submit download">

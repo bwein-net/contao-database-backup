@@ -34,26 +34,6 @@
                 <source>Size</source>
                 <target>Größe</target>
             </trans-unit>
-            <trans-unit id="database_backup_type" resname="database_backup_type">
-                <source>Type</source>
-                <target>Typ</target>
-            </trans-unit>
-            <trans-unit id="database_backup_type_options.manual" resname="database_backup_type_options.manual">
-                <source>Manual</source>
-                <target>Manuell</target>
-            </trans-unit>
-            <trans-unit id="database_backup_type_options.auto" resname="database_backup_type_options.auto">
-                <source>Automatic</source>
-                <target>Automatisch</target>
-            </trans-unit>
-            <trans-unit id="database_backup_type_options.deploy" resname="database_backup_type_options.deploy">
-                <source>Deployment</source>
-                <target>Deployment</target>
-            </trans-unit>
-            <trans-unit id="database_backup_type_options.migration" resname="database_backup_type_options.migration">
-                <source>Migration</source>
-                <target>Migration</target>
-            </trans-unit>
             <trans-unit id="database_backup_download" resname="database_backup_download">
                 <source>Download</source>
                 <target>Download</target>
