@@ -19,17 +19,8 @@ composer require bwein-net/contao-database-backup
 
 ### Replace Configuration
 
-The configuration `bwein_database_backup` has to be replaced by the core configuration:
-
-```yaml
-# config/config.yml
-contao:
-  backup:
-    keep_max: 7
-    keep_intervals: '14D'
-```
-
-see: https://docs.contao.org/manual/en/cli/db-backups/#configuration
+The custom configuration `bwein_database_backup` has to be removed from `config/config.yml`.
+Optionally, it can be replaced by the core configuration - see: https://docs.contao.org/manual/en/cli/db-backups/#configuration
 
 ### Run Migration
 
