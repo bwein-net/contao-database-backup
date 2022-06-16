@@ -49,7 +49,6 @@
     "symfony/translation": "^5.4"
   },
   "require-dev": {
-    "contao/easy-coding-standard": "^3.6"
   },
   "autoload": {
     "psr-4": {
@@ -61,7 +60,7 @@
   },
   "scripts": {
     "ecs": [
-      "vendor/bin/ecs check contao/ src/ --fix --ansi"
+      "@php tools/ecs/vendor/bin/ecs check contao/ src/ --fix --ansi"
     ]
   }
 }
