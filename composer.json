@@ -55,6 +55,11 @@
       "Bwein\\DatabaseBackup\\": "src/"
     }
   },
+  "config": {
+    "allow-plugins": {
+      "contao-components/installer": true
+    }
+  },
   "extra": {
     "contao-manager-plugin": "Bwein\\DatabaseBackup\\ContaoManager\\Plugin"
   },
