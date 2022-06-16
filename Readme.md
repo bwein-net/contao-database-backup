@@ -14,6 +14,20 @@ Install the bundle via Composer:
 ```
 composer require bwein-net/contao-database-backup
 ```
+## Configuration
+
+In the `config/config.yml` you can add the following optional parameters:
+
+```yaml
+# config/config.yml
+bwein_database_backup:
+    cron_interval: 'daily'
+```
+
+The default of `cron_interval` is `null` - so no cron job is running.
+You have to define it manually - see: https://docs.contao.org/manual/en/cli/db-backups/#have-backups-created-automatically
+
+The option `cron_interval` can be `minutely`, `hourly`, `daily`, `weekly`, `monthly`, `yearly` or a full CRON expression, like `*/5 * * * *` - see: https://docs.contao.org/dev/framework/cron/#using-service-tagging
 
 ## Migration from version 1 to 2
 
