@@ -29,6 +29,15 @@ You have to define it manually - see: https://docs.contao.org/manual/en/cli/db-b
 
 The option `cron_interval` can be `minutely`, `hourly`, `daily`, `weekly`, `monthly`, `yearly` or a full CRON expression, like `*/5 * * * *` - see: https://docs.contao.org/dev/framework/cron/#using-service-tagging
 
+**Attention:** Even if you define `daily` as `cron_interval` you need to specify the `keep_max` and `keep_intervals` of the core to have daily backups e.g.
+```yml
+# config/config.yml
+contao:
+  backup:
+    keep_max: 10
+    keep_intervals: ['1D', '2D', '3D', '4D', '5D', '6D', '7D', '14D', '1M']
+```
+
 ## Migration from version 1 to 2
 
 ### Replace Configuration
