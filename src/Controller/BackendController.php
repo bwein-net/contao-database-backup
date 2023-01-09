@@ -14,12 +14,12 @@ namespace Bwein\DatabaseBackup\Controller;
 
 use Contao\BackendUser;
 use Contao\Config;
+use Contao\CoreBundle\Controller\AbstractBackendController;
 use Contao\CoreBundle\Doctrine\Backup\BackupManager;
 use Contao\CoreBundle\Exception\AccessDeniedException;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Message;
 use Contao\System;
-use Contao\CoreBundle\Controller\AbstractBackendController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
