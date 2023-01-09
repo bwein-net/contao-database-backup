@@ -19,7 +19,7 @@ use Contao\CoreBundle\Exception\AccessDeniedException;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Message;
 use Contao\System;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Contao\CoreBundle\Controller\AbstractBackendController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -33,10 +33,10 @@ use Terminal42\ServiceAnnotationBundle\Annotation\ServiceTag;
 use Twig\Environment;
 
 /**
- * @Route("/contao/database_backup", name="bwein_contao_database_backup", defaults={"_scope": "backend"})
+ * @Route("/%contao.backend.route_prefix%/database_backup", name="bwein_contao_database_backup", defaults={"_scope": "backend"})
  * @ServiceTag("controller.service_arguments")
  */
-class BackendController extends AbstractController
+class BackendController extends AbstractBackendController
 {
     private RouterInterface $router;
     private TokenStorageInterface $tokenStorage;
@@ -136,12 +136,14 @@ class BackendController extends AbstractController
         $timeZone = new \DateTimeZone(date_default_timezone_get());
 
         $parameters = [
+            'title' => $this->translator->trans('database_backup_title'),
+            'headline' => $this->translator->trans('database_backup_title'),
             'backUrl' => System::getReferer(),
             'messages' => Message::generate(),
             'backups' => $this->formatForTable($backups, $timeZone),
         ];
 
-        return new Response($this->twig->render('@BweinDatabaseBackup/database_backup/index.html.twig', $parameters));
+        return $this->render('@BweinDatabaseBackup/database_backup/index.html.twig', $parameters);
     }
 
     private function formatForTable(array $backups, \DateTimeZone $timeZone): array

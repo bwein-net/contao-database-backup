@@ -1,10 +1,6 @@
-{% extends "@ContaoCore/Backend/be_page.html.twig" %}
+{% extends "@Contao/be_main" %}
 
-{% block headline %}
-    {{ 'database_backup_title' | trans }}
-{% endblock %}
-
-{% block main %}
+{% block main_content %}
 
     <div id="tl_buttons">
         <a href="{{ backUrl }}" class="header_back" title="">{{ 'database_backup_button_back' | trans }}</a>
@@ -20,4 +16,3 @@
 
 {% endblock %}
 
-{% block error %}{% endblock %}
