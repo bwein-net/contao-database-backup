@@ -4,9 +4,9 @@
             <table class="tl_listing">
                 <thead>
                 <tr>
-                    <th>{{ 'database_backup_date' | trans }}</th>
-                    <th>{{ 'database_backup_size' | trans }}</th>
-                    <th></th>
+                    <th class="tl_folder_tlist">{{ 'database_backup_date' | trans }}</th>
+                    <th class="tl_folder_tlist">{{ 'database_backup_size' | trans }}</th>
+                    <th class="tl_folder_tlist"></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -16,13 +16,13 @@
                         {% set cssClass = 'odd' %}
                     {% endif %}
                     <tr class="{{ cssClass }}">
-                        <td class="nw" width="40%">
+                        <td class="nw tl_file_list" width="40%">
                             {{ backup.dateTime }}
                         </td>
-                        <td width="40%">
+                        <td class="tl_file_list" width="40%">
                             {{ backup.size }}
                         </td>
-                        <td width="20%">
+                        <td class="tl_file_list" width="20%">
                             {% set url_params = { 'download': backup.fileName } %}
                             <a href="{{ path('bwein_contao_database_backup', url_params) }}"
                                title="{{ 'database_backup_download' | trans }} {{ backup.dateTime }}"
