@@ -25,6 +25,7 @@ use Symfony\Component\Finder\Finder;
 class BackupsFolderMigration extends AbstractMigration
 {
     private ParameterBagInterface $params;
+
     private Filesystem $filesystem;
 
     public function __construct(ParameterBagInterface $params, Filesystem $filesystem)

@@ -32,7 +32,7 @@ class Plugin implements BundlePluginInterface, RoutingPluginInterface
         ];
     }
 
-    public function getRouteCollection(LoaderResolverInterface $resolver, KernelInterface $kernel): ?RouteCollection
+    public function getRouteCollection(LoaderResolverInterface $resolver, KernelInterface $kernel): RouteCollection|null
     {
         $file = __DIR__.'/../../config/routes.yaml';
 

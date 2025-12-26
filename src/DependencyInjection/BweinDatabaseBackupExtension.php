@@ -33,7 +33,7 @@ class BweinDatabaseBackupExtension extends ConfigurableExtension
         if (null !== $mergedConfig['cron_interval']) {
             $container->getDefinition(BackupCron::class)->addTag(
                 'contao.cronjob',
-                ['interval' => $mergedConfig['cron_interval']]
+                ['interval' => $mergedConfig['cron_interval']],
             );
         }
     }
