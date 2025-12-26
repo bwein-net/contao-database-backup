@@ -33,23 +33,13 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[Route('%contao.backend.route_prefix%/database_backup', name: 'bwein_contao_database_backup', defaults: ['_scope' => 'backend'])]
 class BackendController extends AbstractBackendController
 {
-    private RouterInterface $router;
-
-    private TokenStorageInterface $tokenStorage;
-
-    private TranslatorInterface $translator;
-
-    private ContaoFramework $framework;
-
-    private BackupManager $backupManager;
-
-    public function __construct(RouterInterface $router, TokenStorageInterface $tokenStorage, TranslatorInterface $translator, ContaoFramework $framework, BackupManager $backupManager)
-    {
-        $this->router = $router;
-        $this->tokenStorage = $tokenStorage;
-        $this->translator = $translator;
-        $this->framework = $framework;
-        $this->backupManager = $backupManager;
+    public function __construct(
+        private readonly RouterInterface $router,
+        private readonly TokenStorageInterface $tokenStorage,
+        private readonly TranslatorInterface $translator,
+        private readonly ContaoFramework $framework,
+        private readonly BackupManager $backupManager,
+    ) {
     }
 
     public function __invoke(Request $request): Response

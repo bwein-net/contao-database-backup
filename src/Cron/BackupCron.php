@@ -18,14 +18,10 @@ use Psr\Log\LoggerInterface;
 
 class BackupCron
 {
-    protected BackupManager $backupManager;
-
-    protected LoggerInterface $logger;
-
-    public function __construct(BackupManager $backupManager, LoggerInterface $logger)
-    {
-        $this->backupManager = $backupManager;
-        $this->logger = $logger;
+    public function __construct(
+        protected BackupManager $backupManager,
+        protected LoggerInterface $logger,
+    ) {
     }
 
     public function __invoke(): void

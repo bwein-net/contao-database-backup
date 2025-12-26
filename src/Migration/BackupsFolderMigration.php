@@ -24,14 +24,10 @@ use Symfony\Component\Finder\Finder;
  */
 class BackupsFolderMigration extends AbstractMigration
 {
-    private ParameterBagInterface $params;
-
-    private Filesystem $filesystem;
-
-    public function __construct(ParameterBagInterface $params, Filesystem $filesystem)
-    {
-        $this->params = $params;
-        $this->filesystem = $filesystem;
+    public function __construct(
+        private readonly ParameterBagInterface $params,
+        private readonly Filesystem $filesystem,
+    ) {
     }
 
     public function shouldRun(): bool
@@ -42,7 +38,7 @@ class BackupsFolderMigration extends AbstractMigration
             $finder->files()->name('*.sql.gz');
 
             return $finder->count() > 0;
-        } catch (DirectoryNotFoundException $exception) {
+        } catch (DirectoryNotFoundException) {
             return false;
         }
     }
