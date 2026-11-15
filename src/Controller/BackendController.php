@@ -12,12 +12,12 @@ declare(strict_types=1);
 
 namespace Bwein\DatabaseBackup\Controller;
 
-use Contao\BackendUser;
 use Contao\Config;
 use Contao\CoreBundle\Controller\AbstractBackendController;
 use Contao\CoreBundle\Doctrine\Backup\BackupManager;
 use Contao\CoreBundle\Exception\AccessDeniedException;
 use Contao\CoreBundle\Framework\ContaoFramework;
+use Contao\CoreBundle\Security\ContaoCorePermissions;
 use Contao\Message;
 use Contao\System;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -25,9 +25,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\StreamedResponse;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('%contao.backend.route_prefix%/database_backup', name: 'bwein_contao_database_backup', defaults: ['_scope' => 'backend'])]
@@ -35,7 +34,6 @@ class BackendController extends AbstractBackendController
 {
     public function __construct(
         private readonly RouterInterface $router,
-        private readonly TokenStorageInterface $tokenStorage,
         private readonly TranslatorInterface $translator,
         private readonly ContaoFramework $framework,
         private readonly BackupManager $backupManager,
@@ -44,25 +42,17 @@ class BackendController extends AbstractBackendController
 
     public function __invoke(Request $request): Response
     {
-        $token = $this->tokenStorage->getToken();
-
-        if (null === $token) {
-            throw new \RuntimeException('No token provided');
-        }
-
-        $user = $token->getUser();
-
-        if (!$user instanceof BackendUser || !$user->hasAccess('database_backup', 'modules')) {
+        if (!$this->isGranted(ContaoCorePermissions::USER_CAN_ACCESS_MODULE, 'database_backup')) {
             throw new AccessDeniedException('Not enough permissions to access database_backup.');
         }
 
         $this->framework->initialize();
 
-        if (!empty($createType = $request->get('create'))) {
+        if (!empty($createType = $request->query->get('create'))) {
             return $this->createAction($createType);
         }
 
-        if (!empty($fileName = $request->get('download'))) {
+        if (!empty($fileName = $request->query->get('download'))) {
             return $this->downloadAction($fileName);
         }
 
@@ -75,6 +65,8 @@ class BackendController extends AbstractBackendController
             Message::addError(
                 $this->translator->trans('database_backup_create_not_allowed'),
             );
+
+            return new RedirectResponse($this->router->generate('bwein_contao_database_backup'), 303);
         }
 
         $config = $this->backupManager->createCreateConfig();
@@ -138,9 +130,7 @@ class BackendController extends AbstractBackendController
         $formatted = [];
 
         foreach ($backups as $backup) {
-            // TODO: Change this to \DateTime::createFromInterface($backup->getCreatedAt()) as soon as we require PHP >=8.0
-            $localeDateTime = new \DateTime('@'.$backup->getCreatedAt()->getTimestamp(), $backup->getCreatedAt()->getTimezone());
-            $localeDateTime->setTimezone($timeZone);
+            $localeDateTime = \DateTime::createFromInterface($backup->getCreatedAt())->setTimezone($timeZone);
 
             $formatted[] = [
                 'dateTimeRaw' => $backup->getCreatedAt()->getTimestamp(),
